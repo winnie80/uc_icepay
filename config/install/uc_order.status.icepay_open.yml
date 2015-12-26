@@ -1,0 +1,7 @@
+id: icepay_open
+name: 'Open ICEPAY payment'
+state: post_checkout
+weight: 9
+locked: true
+status: true
+langcode: en

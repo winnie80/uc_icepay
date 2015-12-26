@@ -1,0 +1,7 @@
+name: ICEPAY payment
+type: module
+description: provide payment using ICEPAY as 3rd party provider
+core: 8.x
+package: Ubercart - payment
+dependencies:
+  - uc_payment

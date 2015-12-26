@@ -1,0 +1,156 @@
+<?php
+
+/**
+ * @file
+ * Contains uc_icepay module main functions integrated with ubercart payment API
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Component\Utility\SafeMarkup;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
+use Drupal\uc_order\Entity\Order;
+use Drupal\uc_icepay\Plugin\IcepayStatics;
+
+/**
+ * Implements hook_help().
+ */
+function uc_icepay_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the uc_icepay module.
+    case 'help.page.uc_icepay':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('provide payment using ICEPAY as 3rd party provider') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function uc_icepay_theme() {
+  $theme = [];
+
+  return $theme;
+}
+
+/**
+ * Redirects if a customer selects ICEPAY payment as a payment method.
+ */
+function ice_payment_cart_checkout($form, FormStateInterface $form_state) {
+  // when selected payment method is not icepay
+  if ($form_state->getValue(['panes', 'payment', 'payment_method']) != 'uc_icepay') {
+    return;
+  }
+
+  $order_id = intval($_SESSION['cart_order']);
+
+  $order = Order::load($order_id);
+  if (!$order || $order->getStateId() != 'in_checkout') {
+    $_SESSION['cart_order'] = NULL;
+    unset($_SESSION['cart_order']);
+    drupal_goto('cart');
+  }
+
+  // here start icepay payment process
+
+  // get result to be checked for error or success
+
+  // when result is unsuccessful / error
+  if ($nvp_response['ACK'] != 'Success') {
+    drupal_set_message(t('Error message from PayPal:<br />@message', ['@message' => $nvp_response['L_LONGMESSAGE0']]), 'error');
+    drupal_goto('cart/checkout');
+  }
+
+  // prepare needed data to be send to icepay
+
+
+  // need to redirect to icepay for customer to complete their payment process
+  header('Location: https://www.');
+  exit();
+}
+
+/**
+ * Returns the form elements for the Website Payments Standard form.
+ */
+function uc_icepay_redirected_form($form, &$form_state, $order) {
+
+  $shipping = 0;
+  foreach ($order->line_items as $item) {
+    if ($item['type'] == 'shipping') {
+      $shipping += $item['amount'];
+    }
+  }
+
+  $tax = 0;
+  if (\Drupal::config('uc_icepay.usetax') && \Drupal::moduleHandler()->moduleExists('uc_tax')) {
+    $tax_items = uc_tax_calculate($order);
+    foreach ($tax_items as $tax_item) {
+      $tax += $tax_item->amount;
+    }
+  }
+
+}
+
+/**
+ * Implements hook_uc_payment_entered, takes action when a payment is entered for an order
+ * @param $order object
+ * @param $method string
+ * @param $amount float
+ * @param $account object
+ * @param $data object
+ * @param $comment string
+ */
+function uc_icepay_uc_payment_entered($order, $method, $amount, $account, $data, $comment) {
+//  drupal_set_message(t('User @uid entered a @method payment of @amount for order @order_id.',
+//      array(
+//        '@uid' => $account->id(),
+//        '@method' => $method,
+//        '@amount' => uc_currency_format($amount),
+//        '@order_id' => $order->id(),
+//      ))
+//  );
+}
+
+/**
+ * Implements hook_uc_store_status().
+ */
+function uc_icepay_uc_store_status() {
+  // this is invoked by StoreController::overview
+  $statuses = [];
+
+  $config = \Drupal::config("uc_icepay.settings");
+
+  $statuses['icepay_merchant_id'] = array(
+    'status' => 'error',
+    'title' => t('ICEPAY Merchant ID'),
+    'desc' => t('The Icepay Merchant id has to be set before any transactions can be made'),
+  );
+
+  if ($config->get("merchant_id")) {
+    $statuses['icepay_merchant_id']['status'] = 'ok';
+//    $statuses['icepay_merchant_id']['desc'] = t('The Icepay Merchant id is successfully set : :merchant_id',
+//      array(':merchant_id' => $config->get("merchant_id"))
+//    );
+    $statuses['icepay_merchant_id']['desc'] = t('The Icepay Merchant id is successfully set.');
+  }
+
+  $statuses['icepay_secret_code'] = array(
+    'status' => 'error',
+    'title' => t('ICEPAY Secret Code'),
+    'desc' => t('The Icepay Secret Code has to be set before any transactions can be made'),
+  );
+
+  if ($config->get("secret_code")) {
+    $statuses['icepay_secret_code']['status'] = 'ok';
+//    $statuses['icepay_secret_code']['desc'] = t('The Icepay Secret Code is properly set. : :secret_code',
+//      array(':secret_code' => $config->get("secret_code"))
+//    );
+    $statuses['icepay_secret_code']['desc'] = t('The Icepay Secret Code is properly set.');
+  }
+
+  return $statuses;
+}

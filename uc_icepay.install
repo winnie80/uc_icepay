@@ -1,0 +1,111 @@
+<?php
+
+//use Drupal\Core\Database\Database;
+//use Drupal\uc_payment\Entity\PaymentMethod;
+
+/**
+ * Implements hook_schema().
+ */
+function uc_icepay_schema() {
+  $schema = array();
+
+  $schema['uc_payment_icepay'] = array(
+    'description' => 'Storing all needed Icepay payment related datas.',
+    'fields' => array(
+      'order_id' => array(
+        'description' => 'The order ID.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'transaction_id' => array(
+        'description' => 'Icepay transaction id',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => FALSE,
+      ),
+      'payment_plugin' => array(
+        'description' => 'Selected icepay payment plugin.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'payment_method' => array(
+        'description' => 'Payment method used for this order.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'ideal_issuer' => array(
+        'description' => 'iDeal issuer chosen by customer during checkout when available.',
+        'type' => 'varchar',
+        'length' => 100,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'icepay_status' => array(
+        'description' => 'The payment status from Icepay.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'created' => array(
+        'description' => 'This order created timestamp.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'updated' => array(
+        'description' => 'This order updated timestamp.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'indexes' => array(
+      'order_id' => array('order_id'),
+    ),
+    'foreign keys' => array(
+      'uc_orders' => array(
+        'table' => 'uc_orders',
+        'columns' => array('order_id' => 'order_id'),
+      ),
+    ),
+  );
+
+  return $schema;
+}
+
+/**
+ * Implements hook_uninstall
+ */
+function uc_icepay_uninstall()
+{
+  // removing all icepay settings already done by default drupal uninstall system
+
+  $icepay_statuses = ['icepay_preparing', 'icepay_err', 'icepay_ok', 'icepay_open', 'icepay_refund', 'icepay_cback'];
+
+  // we need to remove icepay order statuses from config table that not be removed during installation
+  foreach ($icepay_statuses as $icepay_status) {
+    $order_status = 'uc_order.status.' . $icepay_status;
+    \Drupal::configFactory()->getEditable($order_status)->delete();
+  }
+
+  // remove all payment method created using one of icepay payment methods
+//  foreach (\Drupal\uc_payment\Entity\PaymentMethod::loadMultiple() as $method) {
+//    if (substr($method->getPlugin()->getPluginId(), 0, 7) == 'icepay_') {
+//      // based on found method id, locate it's name in config table and remove it
+//      \Drupal\Core\Database\Database::getConnection()
+//        ->delete("config")
+//        ->condition("name", $method->id())
+//        ->execute();
+//    }
+//  }
+
+}

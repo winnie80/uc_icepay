@@ -1,0 +1,7 @@
+id: icepay_err
+name: 'Error ICEPAY payment'
+state: post_checkout
+weight: 10
+locked: true
+status: true
+langcode: en

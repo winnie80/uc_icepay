@@ -1,0 +1,5 @@
+uc_icepay.settings:
+  route_name: uc_icepay.settings
+  base_route: entity.uc_payment_method.collection
+  title: ICEPAY configuration
+  weight: 6

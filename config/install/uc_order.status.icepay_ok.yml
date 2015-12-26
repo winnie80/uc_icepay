@@ -1,0 +1,7 @@
+id: icepay_ok
+name: 'ICEPAY payment received'
+state: payment_received
+weight: 11
+locked: true
+status: true
+langcode: en

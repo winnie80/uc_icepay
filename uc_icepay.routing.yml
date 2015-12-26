@@ -1,0 +1,40 @@
+
+uc_icepay.page_controller_index:
+  path: '/uc_icepay/hello/{name}'
+  defaults:
+    _controller: '\Drupal\uc_icepay\Controller\PageController::index'
+    _title: 'Test ICEPAY access'
+  requirements:
+    _permission: 'access content'
+
+uc_icepay.page_controller_banks:
+  path: '/uc_icepay/banks-list'
+  defaults:
+    _controller: '\Drupal\uc_icepay\Controller\PageController::banks'
+    _title: 'ICEPAY banks list'
+  requirements:
+    _permission: 'access content'
+
+uc_icepay.cart_result:
+  path: '/cart/ice_result'
+  defaults:
+    _controller: '\Drupal\uc_icepay\Controller\PageController::cart_result'
+    _title: 'ICEPAY payment result'
+  requirements:
+    _permission: 'access content'
+
+uc_icepay.cart_postback:
+  path: '/cart/ice_postback'
+  defaults:
+    _controller: '\Drupal\uc_icepay\Controller\PageController::cart_postback'
+    _title: 'ICEPAY payment postback'
+  requirements:
+    _permission: 'access content'
+
+uc_icepay.settings:
+  path: '/admin/store/config/payment/icepay'
+  defaults:
+    _form: '\Drupal\uc_icepay\Form\IcepaySettingsForm'
+    _title: 'ICEPAY configuration'
+  requirements:
+    _permission: 'administer icepay payment config'

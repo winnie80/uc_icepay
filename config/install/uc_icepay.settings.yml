@@ -1,0 +1,28 @@
+payment_methods:
+  ideal: false
+  bancash: false
+  creditcard: false
+  wiretransfer: false
+merchant_id:
+secret_code:
+stream_method: CURL
+language: NL
+country: NL
+currency: EUR
+ipcheck: false
+ipcheck_list:
+https_protocol: false
+url:
+  ok: cart/ice_result
+  err: cart/ice_result
+  notify: cart/ice_postback
+ideal_issuer :
+  ABNAMRO: true
+  ASNBANK: true
+  FRIESLAND: false
+  ING: true
+  RABOBANK: true
+  SNSBANK: true
+  SNSREGIOBANK: true
+  TRIODOSBANK: false
+  VANLANSCHOT: false

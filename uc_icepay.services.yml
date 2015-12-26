@@ -1,0 +1,3 @@
+services:
+  icepay.statics:
+    class: Drupal\IcePay\Statics

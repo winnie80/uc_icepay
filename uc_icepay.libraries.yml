@@ -1,0 +1,12 @@
+uc_icepay.hideshow:
+  js:
+    scripts/hideShowPassword.min.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
+
+uc_icepay.admin-merchant:
+  js:
+    scripts/icepay-admin-merchant.js: {}
+  dependencies:
+    - uc_icepay/uc_icepay.hideshow

@@ -1,0 +1,7 @@
+id: icepay_preparing
+name: 'Preparing ICEPAY payment'
+state: post_checkout
+weight: 8
+locked: true
+status: true
+langcode: en
