@@ -8,5 +8,11 @@ Utilizing ICEPAY API 2.x
 Init development only supporting iDeal payment<br />
 Tested on 8.x-4.x-dev - 2015-Dec-24
 
+Bugs : <br />
+* on pending request, unknown result
+
+Missing : <br />
+* phpunit test is not working yet on this init upload version
+
 Please contact me if you have any suggestions, help or just want to help developing this<br />
 erwinyonathan _ gmail _ com
